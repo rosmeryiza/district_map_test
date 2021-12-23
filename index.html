@@ -17,7 +17,7 @@
             margin: 0;
         }
         </style>
-        <title>District Map</title>
+        <title></title>
     </head>
     <body>
         <div id="map">
@@ -32,6 +32,7 @@
         <script src="js/qgis2web_expressions.js"></script>
         <script src="js/labels.js"></script>
         <script src="data/florida_district_1.js"></script>
+        <script src="data/Intersection_2.js"></script>
         <script>
         var highlightLayer;
         function highlightFeature(e) {
@@ -39,20 +40,19 @@
 
             if (e.target.feature.geometry.type === 'LineString') {
               highlightLayer.setStyle({
-                //color: '#ffff00',
+                color: '#ffff00',
               });
             } else {
               highlightLayer.setStyle({
                 //fillColor: '#ffff00',
-                color: 'rgba(0,0,0,1.0)',
-                fillOpacity: 0.85
+                fillOpacity: 0.7
               });
             }
             highlightLayer.openPopup();
         }
         var map = L.map('map', {
             zoomControl:true, maxZoom:28, minZoom:1
-        }).fitBounds([[25.620788276427298,-82.08826644855498],[27.725301176427216,-78.65345211404485]]);
+        }).fitBounds([[25.67120427702418,-81.92420152817633],[27.775717177024326,-79.2291685905642]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
@@ -86,7 +86,7 @@
                         });
                     }
                 },
-                mouseover: highlightFeature,
+                //mouseover: highlightFeature,
             });
             var popupContent = '<table>\
                     <tr>\
@@ -101,7 +101,7 @@
                 case 'Congressional District 20':
                     return {
                 pane: 'pane_florida_district_1',
-                opacity: 1,
+                opacity: 0,
                 color: 'rgba(78,78,78,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
@@ -116,7 +116,7 @@
                 case 'House District 88':
                     return {
                 pane: 'pane_florida_district_1',
-                opacity: 1,
+                opacity: 0,
                 color: 'rgba(78,78,78,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
@@ -131,7 +131,7 @@
                 case 'House District 94':
                     return {
                 pane: 'pane_florida_district_1',
-                opacity: 1,
+                opacity: 0,
                 color: 'rgba(78,78,78,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
@@ -146,7 +146,7 @@
                 case 'Senate District 33':
                     return {
                 pane: 'pane_florida_district_1',
-                opacity: 1,
+                opacity: 0,
                 color: 'rgba(78,78,78,1.0)',
                 dashArray: '',
                 lineCap: 'butt',
@@ -174,6 +174,63 @@
         });
         bounds_group.addLayer(layer_florida_district_1);
         map.addLayer(layer_florida_district_1);
+        function pop_Intersection_2(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    for (i in e.target._eventParents) {
+                        e.target._eventParents[i].resetStyle(e.target);
+                    }
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + '<b>Zip Code: </b>' + (feature.properties['ZCTA5CE10'] !== null ? autolinker.link(feature.properties['ZCTA5CE10'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + '<b>District: </b>' + (feature.properties['name'] !== null ? autolinker.link(feature.properties['name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Intersection_2_0() {
+            return {
+                pane: 'pane_Intersection_2',
+                opacity: 1,
+                color: 'rgba(78,78,78,1.0)',
+                //color: 'rgba(255,255,255,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.5,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Intersection_2');
+        map.getPane('pane_Intersection_2').style.zIndex = 402;
+        map.getPane('pane_Intersection_2').style['mix-blend-mode'] = 'normal';
+        var layer_Intersection_2 = new L.geoJson(json_Intersection_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Intersection_2',
+            layerName: 'layer_Intersection_2',
+            pane: 'pane_Intersection_2',
+            onEachFeature: pop_Intersection_2,
+            style: style_Intersection_2_0,
+        });
+        bounds_group.addLayer(layer_Intersection_2);
+        map.addLayer(layer_Intersection_2);
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'Districts<br /><table><tr><td style="text-align: center;"><img src="legend/florida_district_1_CongressionalDistrict200.png" /></td><td>Congressional District 20</td></tr><tr><td style="text-align: center;"><img src="legend/florida_district_1_HouseDistrict881.png" /></td><td>House District 88</td></tr><tr><td style="text-align: center;"><img src="legend/florida_district_1_HouseDistrict942.png" /></td><td>House District 94</td></tr><tr><td style="text-align: center;"><img src="legend/florida_district_1_SenateDistrict333.png" /></td><td>Senate District 33</td></tr></table>': layer_florida_district_1},{collapsed:false}).addTo(map);
         setBounds();
         </script>
     </body>
